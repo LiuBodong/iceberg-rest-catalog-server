@@ -32,12 +32,6 @@ public class ConfigParser {
 
     private static final String argPrefix = "--";
 
-    private static final String restServerBindIpKey = "rest.bind.ip";
-    private static final String restServerBindIp = "0.0.0.0";
-    private static final String restServerBindPortKey = "rest.bind.port";
-    private static final int restServerBindPort = 13201;
-    private static final String catalogTypeKey = CatalogUtil.ICEBERG_CATALOG_TYPE;
-
     private final String[] args;
 
     public ConfigParser(String[] commandlineArgs) {
@@ -59,7 +53,7 @@ public class ConfigParser {
                 .collect(Collectors.toMap(ConfigRecord::key, ConfigRecord::value));
     }
 
-    private Map<String, String> parse() {
+    public Map<String, String> parse() {
         Properties properties = System.getProperties();
         Map<String, String> configMap = new HashMap<>();
         properties.forEach((k, v) -> configMap.put(k.toString(), v.toString()));
@@ -74,30 +68,6 @@ public class ConfigParser {
             }
         }
         return configMap;
-    }
-
-    public CatalogConfig getCatalogConfig() {
-        Map<String, String> allConfig = parse();
-        if (allConfig.containsKey(catalogTypeKey)) {
-            CatalogType catalogType = CatalogType.fromString(allConfig.get(catalogTypeKey));
-            String catalogConfigPrefix = "catalog." + catalogType.getTypeName() + ".";
-            return new CatalogConfig(catalogType, propertyWithPrefix(allConfig, catalogConfigPrefix));
-        } else {
-            throw new IllegalArgumentException("Key: " + catalogTypeKey + " not specified!");
-        }
-    }
-
-    public ServerConfig getServerConfig() {
-        Map<String, String> allConfig = parse();
-        String host = restServerBindIp;
-        int port = restServerBindPort;
-        if (allConfig.containsKey(restServerBindIpKey)) {
-            host = allConfig.get(restServerBindIpKey);
-        }
-        if (allConfig.containsKey(restServerBindPortKey)) {
-            port = Integer.parseInt(allConfig.get(restServerBindPortKey));
-        }
-        return new ServerConfig(host, port);
     }
 
     record ConfigRecord(String key, String value) {
