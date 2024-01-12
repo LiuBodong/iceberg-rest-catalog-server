@@ -22,13 +22,18 @@ package org.codebase.config;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.iceberg.CatalogUtil;
 import org.codebase.CatalogType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
 public class ConfigParser {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigParser.class);
 
     private static final String argPrefix = "--";
 
@@ -54,7 +59,9 @@ public class ConfigParser {
     }
 
     public Map<String, String> parse() {
+        LOGGER.info("Args: {}", Arrays.toString(args));
         Properties properties = System.getProperties();
+        LOGGER.info("Properties: {}", properties);
         Map<String, String> configMap = new HashMap<>();
         properties.forEach((k, v) -> configMap.put(k.toString(), v.toString()));
         for (int i = 0; i < args.length; i++) {
