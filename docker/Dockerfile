@@ -1,4 +1,4 @@
-FROM openjdk:17
+FROM trinodb/trino:latest
 LABEL authors="liubodong"
 
 RUN mkdir -p /etc/hadoop/conf && mkdir -p /opt/iceberg-rest-catalog-server/lib
